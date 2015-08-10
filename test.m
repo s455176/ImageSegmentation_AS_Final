@@ -1,7 +1,7 @@
-image = imread('3096.jpg');
+image = imread('../3096.jpg');
 
 image = histogramEqualization(image);
 
 disp('histogramEqualization Finish!');
 
-imshow(image);
+image = superpixelSegmentation(image, 20, 80, 30, 10);
