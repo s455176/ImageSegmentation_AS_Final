@@ -1,4 +1,4 @@
-function [output, components] = superpixelSegmentation(image, k1, k2, m, threshold)
+function [output, superPixelComp, components, label1, label2] = superpixelSegmentation(image, k1, k2, m, threshold)
 	if(nargin < 4)
 		m = 10;
 		threshold = 10;
@@ -88,8 +88,13 @@ function [output, components] = superpixelSegmentation(image, k1, k2, m, thresho
 		E_old = E_new;
 	end
 	
+	label1 = label;
+	
 	% some post processing to ensure connectivity
-	components = connectedComponents(label);
+	[superPixelComp, components] = connectedComponents(label, size(C, 1));
+	[label, components] = connCompPostProcessing(label, components);
+
+	label2 = label;
 	
 	figure(1);
 	RGB = label2rgb(label, 'jet', 'w', 'shuffle');

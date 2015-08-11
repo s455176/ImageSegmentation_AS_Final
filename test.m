@@ -4,4 +4,5 @@ image = histogramEqualization(image);
 
 disp('histogramEqualization Finish!');
 
-[image, components] = superpixelSegmentation(image, 20, 80, 30, 10);
+[image, superPixelComp, components, label1, label2] = superpixelSegmentation(image, 20, 80);
+
