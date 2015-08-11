@@ -1,4 +1,4 @@
-function output = superpixelSegmentation(image, k1, k2, m, threshold)
+function [output, components] = superpixelSegmentation(image, k1, k2, m, threshold)
 	if(nargin < 4)
 		m = 10;
 		threshold = 10;
@@ -89,7 +89,7 @@ function output = superpixelSegmentation(image, k1, k2, m, threshold)
 	end
 	
 	% some post processing to ensure connectivity
-	
+	components = connectedComponents(label);
 	
 	figure(1);
 	RGB = label2rgb(label, 'jet', 'w', 'shuffle');
