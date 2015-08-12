@@ -72,6 +72,18 @@ function [output, superPixelComp, components, label1, label2] = superpixelSegmen
 				cluster_count(label(row, col)) = cluster_count(label(row, col)) + 1;
 			end
 		end
+		
+		% remove the empty cluster
+		empty_cluster = find(~cluster_count);
+		compenstate_label = zeros(size(label));
+		for i = 1:size(empty_cluster, 2)
+			compenstate_label = compenstate_label + (label > empty_cluster(i));
+		end
+		
+		label = label - compenstate_label;
+		cluster_count(empty_cluster) = [];
+		C(empty_cluster, :) = [];
+		
 		for k = 1:size(C, 1)
 			C(k, :) = cluster_center(k, :) / cluster_count(k);
 		end
@@ -87,24 +99,32 @@ function [output, superPixelComp, components, label1, label2] = superpixelSegmen
 		E = E_old - E_new
 		E_old = E_new;
 	end
+	disp('clustering finish!');
+	toc;
 	
 	label1 = label;
 	
 	% some post processing to ensure connectivity
+	tic;
 	[superPixelComp, components] = connectedComponents(label, size(C, 1));
-	[label, components] = connCompPostProcessing(label, components);
-
-	label2 = label;
+	disp('connected component finish!');
+	toc;
 	
+	tic;
+	[label, components] = connCompPostProcessing(lab, label, components, avg_S, m);
+	disp('postprocessing finish!');
+	toc;
+	
+	label2 = label;
+%{
 	figure(1);
 	RGB = label2rgb(label, 'jet', 'w', 'shuffle');
 	subplot(1, 2, 1);
 	imshow(image);
 	subplot(1, 2, 2);
 	imshow(RGB);
-	
+%}
 	disp('superpixelSegmentation Finish!');
-	toc;
 end
 
 
