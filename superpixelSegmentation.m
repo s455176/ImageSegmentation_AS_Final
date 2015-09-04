@@ -1,4 +1,4 @@
-function [output, superPixelComp, components, label1, label2] = superpixelSegmentation(image, k1, k2, m, threshold)
+function [output, components, label] = superpixelSegmentation(image, k1, k2, m, threshold)
 	if(nargin < 4)
 		m = 10;
 		threshold = 10;
@@ -102,11 +102,9 @@ function [output, superPixelComp, components, label1, label2] = superpixelSegmen
 	disp('clustering finish!');
 	toc;
 	
-	label1 = label;
-	
 	% some post processing to ensure connectivity
 	tic;
-	[superPixelComp, components] = connectedComponents(label, size(C, 1));
+	components = connectedComponents(label);
 	disp('connected component finish!');
 	toc;
 	
@@ -114,8 +112,7 @@ function [output, superPixelComp, components, label1, label2] = superpixelSegmen
 	[label, components] = connCompPostProcessing(lab, label, components, avg_S, m);
 	disp('postprocessing finish!');
 	toc;
-	
-	label2 = label;
+
 %{
 	figure(1);
 	RGB = label2rgb(label, 'jet', 'w', 'shuffle');

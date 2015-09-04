@@ -4,8 +4,17 @@ origin_image = image;
 % image = histogramEqualization(image);
 % disp('histogramEqualization Finish!');
 
-[image, superPixelComp, components, label1, label2] = superpixelSegmentation(image, 40, 60, 5, 5);
+[image, components, label] = superpixelSegmentation(image, 40, 60, 5, 5);
 
+figure(1);
+RGB = label2rgb(label, 'jet', 'w', 'shuffle');
+subplot(1, 2, 1);
+imshow(image);
+subplot(1, 2, 2);
+imshow(RGB);
+
+
+%{
 % show the segmentation 
 superpixel_image = origin_image;
 for i = 1:size(label2, 1)
@@ -46,3 +55,4 @@ hold on;
 for k = 1:numel(b)
     plot(b{k}(:,2), b{k}(:,1), 'r', 'Linewidth', 3)
 end
+%}
