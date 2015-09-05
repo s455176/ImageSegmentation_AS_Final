@@ -13,6 +13,8 @@ imshow(image);
 subplot(1, 2, 2);
 imshow(RGB);
 
+[components, label, V, W, D] = NCutSegmentation(origin_image, components, 15, 10, 50);
+
 
 %{
 % show the segmentation 
