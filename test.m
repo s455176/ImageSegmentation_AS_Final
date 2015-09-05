@@ -6,15 +6,14 @@ origin_image = image;
 
 [image, components, label] = superpixelSegmentation(image, 40, 60, 5, 5);
 
+[components, label, V] = NCutSegmentation(origin_image, components, 15, 10, 50);
+
 figure(1);
 RGB = label2rgb(label, 'jet', 'w', 'shuffle');
 subplot(1, 2, 1);
-imshow(image);
+imshow(origin_image);
 subplot(1, 2, 2);
 imshow(RGB);
-
-[components, label, V, W, D] = NCutSegmentation(origin_image, components, 15, 10, 50);
-
 
 %{
 % show the segmentation 

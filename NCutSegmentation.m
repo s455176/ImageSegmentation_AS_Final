@@ -1,7 +1,7 @@
-function [componentsOut, label, V, W, D] = NCutSegmentation(image, componentsIn, sigmaI, sigmaX, r)
+function [componentsOut, label, V] = NCutSegmentation(image, componentsIn, sigmaI, sigmaX, r)
 	V = cell(0);
 	componentsOut = componentsIn;
-	label = zeros(size(image));
+	label = zeros(size(image, 1), size(image, 2));
 	
 	% each superpixel is regarded as a vertex in graph G = (V, E)
 	tic;
@@ -29,7 +29,7 @@ function [componentsOut, label, V, W, D] = NCutSegmentation(image, componentsIn,
 	
 	% construct matrix W and D
 	W = zeros(N, N);
-	D = zeros(1, N);
+	D_diag = zeros(1, N);
 	
 	tic;
 	for i = 1:N
@@ -44,10 +44,36 @@ function [componentsOut, label, V, W, D] = NCutSegmentation(image, componentsIn,
 	end
 	
 	for i = 1:N
-		D(i) = sum(W(i, :));
+		D_diag(i) = sum(W(i, :));
 	end
+	D = diag(D_diag);
+	
 	disp('construct W and D matrix Finish!');
 	toc;
+	
+	[EigVec, EigVal] = eig(D - W, D);	
+	EigVal = diag(EigVal);
+	EigVec = EigVec(:, 2);
+	
+	splitPoint = findEigSplitPoint(EigVec);
+	
+	cluster = cell(2, 1);
+	
+	for i = 1:size(EigVec, 1)
+		if(EigVec(i) > splitPoint)
+			cluster{1} = [cluster{1}, i];
+			cluster_index = 1;
+		else
+			cluster{2} = [cluster{2}, i];
+			cluster_index = 2;
+		end
+		for j = 1:size(componentsOut{V{i}.index}, 1)
+			row = componentsOut{V{i}.index}(j, 1);
+			col = componentsOut{V{i}.index}(j, 2);
+			label(row, col) = cluster_index;
+		end
+	end
+	
 end
 
 
