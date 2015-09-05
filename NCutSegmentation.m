@@ -53,9 +53,14 @@ function [componentsOut, label, V] = NCutSegmentation(image, componentsIn, sigma
 	
 	[EigVec, EigVal] = eig(D - W, D);	
 	EigVal = diag(EigVal);
+	
+	EigVal = EigVal(2);
 	EigVec = EigVec(:, 2);
 	
-	splitPoint = findEigSplitPoint(EigVec);
+	tic;
+	[splitPoint, bestVal] = findEigSplitPoint(W, D_diag', EigVec, 20)
+	disp('choose split point finish!');
+	toc;
 	
 	cluster = cell(2, 1);
 	
@@ -73,6 +78,8 @@ function [componentsOut, label, V] = NCutSegmentation(image, componentsIn, sigma
 			label(row, col) = cluster_index;
 		end
 	end
+	
+	% NCut_val = (EigVec' * (D - W) * EigVec) / (EigVec' * D * EigVec);
 	
 end
 

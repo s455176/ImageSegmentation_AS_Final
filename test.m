@@ -1,4 +1,4 @@
-image = imread('../3096.jpg');
+image = imread('../45096.jpg');
 origin_image = image;
 
 % image = histogramEqualization(image);
@@ -6,9 +6,17 @@ origin_image = image;
 
 [image, components, label] = superpixelSegmentation(image, 40, 60, 5, 5);
 
+figure(1);
+RGB = label2rgb(label, 'jet', 'w', 'shuffle');
+subplot(1, 2, 1);
+imshow(origin_image);
+subplot(1, 2, 2);
+imshow(RGB);
+
+
 [components, label, V] = NCutSegmentation(origin_image, components, 15, 10, 50);
 
-figure(1);
+figure(2);
 RGB = label2rgb(label, 'jet', 'w', 'shuffle');
 subplot(1, 2, 1);
 imshow(origin_image);
